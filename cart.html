@@ -9,7 +9,11 @@
 </head>
 
 <body>
-    <h1>This is cart page</h1>
+    <div>
+        <h1>This is cart page</h1>
+        <!-- <button class="btn btn-primary">Go back</button> -->
+    </div>
+
     <div class="parent mt-5">
 
     </div>
@@ -44,7 +48,9 @@
             <p>${arr.price}</p>
             <span>${arr.rating.rate}</span>
             <p>${arr.title}</p>
-            <button onclick="addtolocalstorage(${arr.id})">Add to cart</button>
+            <button class="decrement">-</button>
+            <input type="number" value="1" min="1">
+            <button class="increment">+</button> 
             `
             parent.appendChild(div)
         }

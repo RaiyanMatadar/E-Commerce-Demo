@@ -42,10 +42,11 @@ function ShowDataFetchedData(arr) {
             <p>${price}</p>
             <span>${rate}</span>
             <p>${title}</p>
-            <button onclick="addtolocalstorage(${id})">Add to cart</button>
-            <button onclick="ProductsDetails(${id})">Products Details</button>            
+            <button class="btn btn-primary" onclick="addtolocalstorage(${id})">Add to cart</button>
+            <button class="btn btn-primary" onclick="ProductsDetails(${id})">Products Details</button>
             `
         parent.appendChild(div)
+            // modelOnBox()
     })
 }
 
@@ -95,3 +96,15 @@ document.getElementById("viewcart").onclick = () => {
 function ProductsDetails(id) {
     window.location.href = `ProductsDetails.html?id=${id}`;
 }
+
+// function modelOnBox() {
+//     const boxes = document.getElementsByClassName('box');
+
+//     for (let box of boxes) {
+//         box.addEventListener('click', (event) => {
+//             for (let element of boxes) {
+//                 element.style.backgroundColor = 'red';
+//             }
+//         });
+//     }
+// }
