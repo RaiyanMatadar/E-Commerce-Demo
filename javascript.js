@@ -70,21 +70,29 @@ search.addEventListener('input', (event) => {
 // it will check if the duplicate data in local storage exist 
 // say its already exist if not then add the product 
 function addtolocalstorage(id) {
-    let arr = []
-    arr.push(id)
-    let exitarray = JSON.parse(localStorage.getItem('mycart'))
-    console.log(exitarray);
+    let arr = [];
+    arr.push(id);
 
-    if (exitarray && exitarray.includes(id)) {
-        alert("product allready added")
-        return
+    let obj = {
+        id: id,
+        productQuantity: 0
+    };
+
+    let exitarray = JSON.parse(localStorage.getItem('mycart'));
+
+    // .some() given true of false so thats why we used it here s oits loop 
+    // trough every item's id thenif it gets the duplicate it will give false if 
+    // not then true then based on it the if else will execute 
+    if (exitarray && exitarray.some(item => item.id === id)) {
+        alert("Product already added");
+        return;
     }
 
     if (exitarray) {
-        exitarray = [...exitarray, ...arr]
-        localStorage.setItem("mycart", JSON.stringify(exitarray))
+        exitarray.push(obj);
+        localStorage.setItem("mycart", JSON.stringify(exitarray));
     } else {
-        localStorage.setItem("mycart", JSON.stringify(arr))
+        localStorage.setItem("mycart", JSON.stringify([obj]));
     }
 }
 
@@ -96,15 +104,3 @@ document.getElementById("viewcart").onclick = () => {
 function ProductsDetails(id) {
     window.location.href = `ProductsDetails.html?id=${id}`;
 }
-
-// function modelOnBox() {
-//     const boxes = document.getElementsByClassName('box');
-
-//     for (let box of boxes) {
-//         box.addEventListener('click', (event) => {
-//             for (let element of boxes) {
-//                 element.style.backgroundColor = 'red';
-//             }
-//         });
-//     }
-// }
