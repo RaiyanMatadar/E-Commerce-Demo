@@ -82,8 +82,7 @@
             console.log("incrementQty function called");
 
 
-            // selected btn & input 
-            const increment = document.getElementsByClassName('increment')[0];
+            // selected input 
             const inputQty = document.getElementsByClassName("inputQty")[0];
 
             // increasing value by one on every click 
@@ -91,10 +90,16 @@
             inputQty.value = inputValue;
 
             productQty = inputQty.value;
-            // console.log("Qty", productQty);
-            // console.log("id", productId);
+            console.log("Qty", productQty);
+            console.log("id", productId);
 
-            localStorageArr
+            // this index will give return the index of the specific product cart 
+            // NOTE : this will only work if the id is an sequential order as id 1 id 2 id 3 
+            // just like an indexed this isnt an good idea to use as if the id sequence is differ 
+            // this can break our projects 
+            const index = productId - 1;
+
+            localStorageArr[index].productQty = productQty
         }
     </script>
 </body>
