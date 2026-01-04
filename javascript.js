@@ -71,20 +71,30 @@ search.addEventListener('input', (event) => {
 // say its already exist if not then add the product 
 function addtolocalstorage(id) {
     let arr = []
-    arr.push(id)
-    let exitarray = JSON.parse(localStorage.getItem('mycart'))
-    console.log(exitarray);
 
-    if (exitarray && exitarray.includes(id)) {
-        alert("product allready added")
-        return
+    let obj = {
+        id: id,
+        productQty: 1
+    }
+
+    arr.push(obj)
+
+    let exitarray = JSON.parse(localStorage.getItem('mycart'))
+
+    if (exitarray) {
+        for (let v of exitarray) {
+            if (v.id == id) {
+                alert("product is already added")
+                return
+            }
+        }
     }
 
     if (exitarray) {
-        exitarray.push(obj);
-        localStorage.setItem("mycart", JSON.stringify(exitarray));
+        exitarray = [...exitarray, ...arr]
+        localStorage.setItem("mycart", JSON.stringify(exitarray))
     } else {
-        localStorage.setItem("mycart", JSON.stringify([obj]));
+        localStorage.setItem("mycart", JSON.stringify(arr))
     }
 }
 
