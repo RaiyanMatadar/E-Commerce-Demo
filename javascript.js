@@ -70,22 +70,14 @@ search.addEventListener('input', (event) => {
 // it will check if the duplicate data in local storage exist 
 // say its already exist if not then add the product 
 function addtolocalstorage(id) {
-    let arr = [];
-    arr.push(id);
+    let arr = []
+    arr.push(id)
+    let exitarray = JSON.parse(localStorage.getItem('mycart'))
+    console.log(exitarray);
 
-    let obj = {
-        id: id,
-        productQuantity: 0
-    };
-
-    let exitarray = JSON.parse(localStorage.getItem('mycart'));
-
-    // .some() given true of false so thats why we used it here s oits loop 
-    // trough every item's id thenif it gets the duplicate it will give false if 
-    // not then true then based on it the if else will execute 
-    if (exitarray && exitarray.some(item => item.id === id)) {
-        alert("Product already added");
-        return;
+    if (exitarray && exitarray.includes(id)) {
+        alert("product allready added")
+        return
     }
 
     if (exitarray) {
@@ -101,6 +93,8 @@ document.getElementById("viewcart").onclick = () => {
     window.location.href = 'cart.html';
 }
 
+// this will make an seprate shareable link for ProductsDetails when i 
+// click on card's ProductsDetails btn 
 function ProductsDetails(id) {
     window.location.href = `ProductsDetails.html?id=${id}`;
 }

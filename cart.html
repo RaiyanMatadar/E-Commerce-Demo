@@ -20,114 +20,88 @@
     </div>
 
     <script>
-        // arrayOfObject has maycart key which contains id & productQuantity 
-        let arrayOfObject = JSON.parse(localStorage.getItem('mycart'));
+        // localStorageArr has the mycart key from the localStorage 
+        let localStorageArr = JSON.parse(localStorage.getItem('mycart'));
 
         async function fetchData(obj) {
             try {
-
-                console.log("fetchData function called");
+                let res = [];
+                console.log("fetchData called ");
                 for (let element of obj) {
-                    const response = await fetch(`https://fakestoreapi.com/products/${element.id}`);
+                    let {
+                        id,
+                        productQty
+                    } = element
+                    const response = await fetch(`https://fakestoreapi.com/products/${id}`);
                     let data = await response.json()
-                    ShowDataFetchedData(data);
+                    res.push(data)
                 }
-                cartQuantity()
+                ShowDataFetchedData(res);
 
             } catch (error) {
                 console.log(error);
             }
         }
-        fetchData(arrayOfObject)
 
-        // showing data from the (local storage) mycart key  
+        fetchData(localStorageArr)
+
         function ShowDataFetchedData(arr) {
-            console.log("ShowDataFetchedData function called");
+            console.log("ShowDataFetchedData called");
             const parent = document.getElementsByClassName('parent')[0];
 
-            const div = document.createElement("div");
+            arr.forEach((element, index) => {
 
-            div.classList.add("box")
-            div.innerHTML = `
-            <img src="${arr.image}" alt="">
-            <p>${arr.category}</p>
-            <p>${arr.price}</p>
-            <span>${arr.rating.rate}</span>
-            <p>${arr.title}</p>
-            <button class="decrement btn btn-primary" >-</button>
-            <input id="productQtyInput" type="number" value="1" min="1">
+                const div = document.createElement("div");
 
-            <button class="increment btn btn-primary" >+</button> 
-            `
-            parent.appendChild(div)
+                let {
+                    title,
+                    image,
+                    price,
+                    rating: {
+                        rate,
+                        count
+                    },
+                    id,
+                    category
+                } = element;
+
+                div.classList.add("box")
+
+                div.innerHTML = `
+                <img src="${image}" alt="">
+                <p>${category}</p>
+                <p>${price}</p>
+                <span>${rate}</span>
+                <p>${title}</p>
+                <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-primary" onclick="decreamentQty(${id},${index})">-</button>
+                <p class="quantity">${localStorageArr[index].productQty}</p>
+                <button class="btn btn-primary" onclick="incrementQty(${id}, ${index})">+</button>
+                </div>
+                `
+                parent.appendChild(div)
+            });
         }
 
-        // increment/decrement cart products quantity function
-        function cartQuantity() {
+        // this will increment the quntity of the product and store it into the value of the product 
+        function incrementQty(id, i) {
+            let quantities = document.querySelectorAll(".quantity")
+            localStorageArr[i].productQty += 1
 
-            const decrementBtns = document.querySelectorAll('.decrement');
-            const productQtyInput = document.getElementById('productQtyInput');
-            const incrementBtns = document.querySelectorAll('.increment');
-            productQtyInput
+            quantities[i].innerHTML = localStorageArr[i].productQty
+            localStorage.setItem("mycart", JSON.stringify(localStorageArr))
+        }
 
-            let localStorageData = JSON.parse(localStorage.getItem('mycart'));
 
-            console.log(localStorageData);
+        // this will decrement the quntity of the product and store it into the value of the product 
+        function decreamentQty(id, i) {
+            let quantities = document.querySelectorAll(".quantity")
+            if (localStorageArr[i].productQty > 1) {
+                localStorageArr[i].productQty -= 1
 
-            let [{
-                id,
-                productQuantity
-            }] = localStorageData
-
-            // incrementBtns 
-            incrementBtns.forEach(incBtn => {
-                incBtn.addEventListener('click', (event) => {
-
-                    // this will target the privious element which is input in this scenario
-                    const input = event.target.previousElementSibling;
-                    input.value = Number(input.value) + 1;
-
-                    localStorageData = localStorageData.map(item => {
-                        if (item.id === id) {
-                            let updatedValue = input.value = Number(input.value);
-                            return {
-                                ...item,
-                                productQuantity: updatedValue,
-                            };
-                        }
-                        return item;
-                    });
-
-                    localStorage.setItem("mycart", JSON.stringify(localStorageData));
-                })
-            });
-
-            // decrementBtns
-            decrementBtns.forEach(decBtn => {
-                decBtn.addEventListener('click', (event) => {
-
-                    const input = event.target.nextElementSibling;
-                    input.value = Number(input.value) - 1;
-
-                    // this will ensure if the value is 1 then we cant decrement
-                    if (input.value < 1) {
-                        input.value = 1;
-                        // YOU NEED TO CONVERT THEM INTO NUMBER REMEMBER THAT 
-                    }
-
-                    localStorageData = localStorageData.map(item => {
-                        if (item.id === id) {
-                            return {
-                                ...item,
-                                productQuantity: item.productQuantity - 1,
-                            };
-                        }
-                        return item;
-                    });
-
-                    localStorage.setItem("mycart", JSON.stringify(localStorageData));
-                })
-            });
+                quantities[i].innerHTML = localStorageArr[i].productQty
+                localStorage.setItem("mycart", JSON.stringify(localStorageArr))
+            }
         }
     </script>
 </body>
