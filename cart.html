@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/style.css">
 </head>
 
@@ -19,87 +20,88 @@
     </div>
 
     <script>
-        // localStorageArr is an array of obj which has id, productQty
+        // localStorageArr has the mycart key from the localStorage 
         let localStorageArr = JSON.parse(localStorage.getItem('mycart'));
 
-        // this fetchData function will fetch API (this fnc only takes id of API)
-        async function fetchData(arrOfObj) {
+        async function fetchData(obj) {
             try {
-                console.table("fetchData");
-                for (let element of arrOfObj) {
-                    const response = await fetch(`https://fakestoreapi.com/products/${element.id}`);
+                let res = [];
+                console.log("fetchData called ");
+                for (let element of obj) {
+                    let {
+                        id,
+                        productQty
+                    } = element
+                    const response = await fetch(`https://fakestoreapi.com/products/${id}`);
                     let data = await response.json()
-                    ShowDataFetchedData(data);
+                    res.push(data)
                 }
+                ShowDataFetchedData(res);
 
             } catch (error) {
                 console.log(error);
             }
         }
-        // whe have passed localStorageArr in fetchData which has the id and productQty
+
         fetchData(localStorageArr)
 
-        // this ShowDataFetchedData funciton will render the card based on the API 
         function ShowDataFetchedData(arr) {
-            console.log("ShowDataFetchedData");
+            console.log("ShowDataFetchedData called");
             const parent = document.getElementsByClassName('parent')[0];
-            const div = document.createElement("div");
 
-            // Find the productQty from localStorageArr based on the id
-            const product = localStorageArr.find(item => item.id === arr.id);
-            const productQty = product ? product.productQty : 0;
+            arr.forEach((element, index) => {
 
-            div.classList.add("box")
-            div.innerHTML = `
-            <img src="${arr.image}" alt="">
-            <p>${arr.category}</p>
-            <p>${arr.price}</p>
-            <span>${arr.rating.rate}</span>
-            <p>${arr.title}</p>
-            <button class="decrement">-</button>
-            <input class="inputQty" type="number" value="1" min="1">
-            <button class="increment" onclick="incrementQty(${productQty}, ${arr.id})">+</button>
-            `
-            parent.appendChild(div)
+                const div = document.createElement("div");
+
+                let {
+                    title,
+                    image,
+                    price,
+                    rating: {
+                        rate,
+                        count
+                    },
+                    id,
+                    category
+                } = element;
+
+                div.classList.add("box")
+
+                div.innerHTML = `
+                <img src="${image}" alt="">
+                <p>${category}</p>
+                <p>${price}</p>
+                <span>${rate}</span>
+                <p>${title}</p>
+                <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-primary" onclick="decreamentQty(${id},${index})">-</button>
+                <p class="quantity">${localStorageArr[index].productQty}</p>
+                <button class="btn btn-primary" onclick="incrementQty(${id}, ${index})">+</button>
+                </div>
+                `
+                parent.appendChild(div)
+            });
         }
 
-        // productQty parameter has the product Quantity of the card which i click
-        // in simple productQty will give me the product Quantity of the card which i click   
-        // function incrementQty(productQty) {
-        //     console.log("incrementQty funciton called");
+        // this will increment the quntity of the product and store it into the value of the product 
+        function incrementQty(id, i) {
+            let quantities = document.querySelectorAll(".quantity")
+            localStorageArr[i].productQty += 1
 
-        //     const increment = document.getElementsByClassName('increment')[0];
-        //     const inputQty = document.getElementsByClassName("inputQty")[0];
-
-        //     let inputValue = Number(inputQty.value) + 1;
-        //     inputQty.value = inputValue;
-
-        //     productQty = inputQty.value
-        //     console.log(productQty);
-        // }
-
-        function incrementQty(productQty, productId) {
-            console.log("incrementQty function called");
+            quantities[i].innerHTML = localStorageArr[i].productQty
+            localStorage.setItem("mycart", JSON.stringify(localStorageArr))
+        }
 
 
-            // selected input
-            const inputQty = document.getElementsByClassName("inputQty")[0];
+        // this will decrement the quntity of the product and store it into the value of the product 
+        function decreamentQty(id, i) {
+            let quantities = document.querySelectorAll(".quantity")
+            if (localStorageArr[i].productQty > 1) {
+                localStorageArr[i].productQty -= 1
 
-            // increasing value by one on every click 
-            let inputValue = Number(inputQty.value) + 1;
-            inputQty.value = inputValue;
-
-            productQty = inputQty.value;
-            console.log("Qty", productQty);
-            console.log("id", productId);
-
-            // this index will give return the index of the specific product cart 
-            // NOTE : this will only work if the id is an sequential order as id 1 id 2 id 3 
-            // just like an indexed this isnt an good idea to use as if the id sequence is differ 
-            // this can break our projects 
-            const index = productId - 1;
-
-            localStorageArr[index].productQty = productQty
+                quantities[i].innerHTML = localStorageArr[i].productQty
+                localStorage.setItem("mycart", JSON.stringify(localStorageArr))
+            }
         }
     </script>
 </body>

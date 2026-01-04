@@ -71,29 +71,25 @@ search.addEventListener('input', (event) => {
 // say its already exist if not then add the product 
 function addtolocalstorage(id) {
     let arr = []
+
     let obj = {
         id: id,
         productQty: 1
     }
 
     arr.push(obj)
-    console.log(arr);
 
-    // exitarray stores key as mycart in localStorage if there is mycart
-    let exitarray = JSON.parse(localStorage.getItem('mycart'));
+    let exitarray = JSON.parse(localStorage.getItem('mycart'))
 
-    // checks if the product is already there or not
     if (exitarray) {
-        for (let value of exitarray) {
-            if (value.id === id) {
+        for (let v of exitarray) {
+            if (v.id == id) {
                 alert("product is already added")
                 return
             }
         }
     }
 
-    // add new product if true 
-    // if false then add mucart key to localstorage  
     if (exitarray) {
         exitarray = [...exitarray, ...arr]
         localStorage.setItem("mycart", JSON.stringify(exitarray))
@@ -107,18 +103,8 @@ document.getElementById("viewcart").onclick = () => {
     window.location.href = 'cart.html';
 }
 
+// this will make an seprate shareable link for ProductsDetails when i 
+// click on card's ProductsDetails btn 
 function ProductsDetails(id) {
     window.location.href = `ProductsDetails.html?id=${id}`;
 }
-
-// function modelOnBox() {
-//     const boxes = document.getElementsByClassName('box');
-
-//     for (let box of boxes) {
-//         box.addEventListener('click', (event) => {
-//             for (let element of boxes) {
-//                 element.style.backgroundColor = 'red';
-//             }
-//         });
-//     }
-// }
